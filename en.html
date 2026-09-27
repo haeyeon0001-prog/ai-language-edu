@@ -881,14 +881,14 @@
 </section>
 
 <!-- Contact -->
-<!-- 送信先は Formspree（https://formspree.io）。data-endpoint にフォームのURLを入れる -->
+<!-- 送信先は FormSubmit（https://formsubmit.co、登録不要）。data-endpoint の宛先に届く -->
 <section class="section alt" id="contact">
   <div class="section-inner">
     <p class="section-label fade-in">Contact</p>
     <h2 class="section-title fade-in">Get in touch.</h2>
     <p class="section-lead fade-in">For questions about the materials, requests for talks or workshops, or advice on using AI, please use this form. I will reply after reviewing your message. Japanese, Korean, Chinese and English are all welcome.</p>
 
-    <form class="contact-form fade-in" id="contact-form" data-endpoint="" novalidate>
+    <form class="contact-form fade-in" id="contact-form" data-endpoint="https://formsubmit.co/ajax/haeyeon0001@gmail.com" novalidate>
       <div class="contact-row">
         <label><span>Name<span class="req">Required</span></span>
           <input name="name" type="text" autocomplete="name" maxlength="100" required>
@@ -914,7 +914,7 @@
       <label><span>Message<span class="req">Required</span></span>
         <textarea name="message" maxlength="5000" required></textarea>
       </label>
-      <div class="contact-hp" aria-hidden="true"><input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></div>
+      <div class="contact-hp" aria-hidden="true"><input name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
       <p class="contact-note">The information you enter is used only to reply to your inquiry.</p>
       <button class="contact-submit" type="submit">Send</button>
       <p data-required="Please fill in your name, email, topic and message." data-email="Please enter a valid email address." data-sending="Sending…" data-ok="Thank you. Your message has been sent." data-fail="Your message could not be sent. Please try again later." class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
@@ -937,7 +937,7 @@
 </footer>
 
 <script>
-// お問い合わせフォーム（Formspree に送信）
+// お問い合わせフォーム（FormSubmit に送信）
 (function () {
   var form = document.getElementById('contact-form');
   var status = document.getElementById('contact-status');
@@ -962,8 +962,11 @@
     var data = new FormData(form);
     data.append('_subject', '【baihaiyan.com】' + f.category.value);
     data.append('page', location.href);
+    data.append('_template', 'table');
+    data.append('_captcha', 'false');
     fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); form.reset(); show(msg.ok, 'ok'); })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) { if (String(j.success) !== 'true') throw new Error(j.message); form.reset(); show(msg.ok, 'ok'); })
       .catch(function () { show(msg.fail, 'err'); })
       .then(function () { btn.disabled = false; });
   });

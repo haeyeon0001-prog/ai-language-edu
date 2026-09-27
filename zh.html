@@ -881,14 +881,14 @@
 </section>
 
 <!-- Contact -->
-<!-- 送信先は Formspree（https://formspree.io）。data-endpoint にフォームのURLを入れる -->
+<!-- 送信先は FormSubmit（https://formsubmit.co、登録不要）。data-endpoint の宛先に届く -->
 <section class="section alt" id="contact">
   <div class="section-inner">
     <p class="section-label fade-in">联系我</p>
     <h2 class="section-title fade-in">欢迎随时联系。</h2>
     <p class="section-lead fade-in">有关教材、讲座・培训邀请或 AI 应用咨询等，请通过此表单联系。确认内容后我会回复您。欢迎使用中文。</p>
 
-    <form class="contact-form fade-in" id="contact-form" data-endpoint="" novalidate>
+    <form class="contact-form fade-in" id="contact-form" data-endpoint="https://formsubmit.co/ajax/haeyeon0001@gmail.com" novalidate>
       <div class="contact-row">
         <label><span>姓名<span class="req">必填</span></span>
           <input name="name" type="text" autocomplete="name" maxlength="100" required>
@@ -914,7 +914,7 @@
       <label><span>咨询内容<span class="req">必填</span></span>
         <textarea name="message" maxlength="5000" required></textarea>
       </label>
-      <div class="contact-hp" aria-hidden="true"><input name="_gotcha" type="text" tabindex="-1" autocomplete="off"></div>
+      <div class="contact-hp" aria-hidden="true"><input name="_honey" type="text" tabindex="-1" autocomplete="off"></div>
       <p class="contact-note">您填写的信息仅用于回复您的咨询。</p>
       <button class="contact-submit" type="submit">发送</button>
       <p data-required="请填写姓名、电子邮箱、咨询类别和内容。" data-email="请输入正确的电子邮箱。" data-sending="正在发送…" data-ok="已收到您的咨询，谢谢。" data-fail="发送失败，请稍后再试。" class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
@@ -937,7 +937,7 @@
 </footer>
 
 <script>
-// お問い合わせフォーム（Formspree に送信）
+// お問い合わせフォーム（FormSubmit に送信）
 (function () {
   var form = document.getElementById('contact-form');
   var status = document.getElementById('contact-status');
@@ -962,8 +962,11 @@
     var data = new FormData(form);
     data.append('_subject', '【baihaiyan.com】' + f.category.value);
     data.append('page', location.href);
+    data.append('_template', 'table');
+    data.append('_captcha', 'false');
     fetch(endpoint, { method: 'POST', body: data, headers: { Accept: 'application/json' } })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); form.reset(); show(msg.ok, 'ok'); })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (j) { if (String(j.success) !== 'true') throw new Error(j.message); form.reset(); show(msg.ok, 'ok'); })
       .catch(function () { show(msg.fail, 'err'); })
       .then(function () { btn.disabled = false; });
   });
