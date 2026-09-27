@@ -510,8 +510,7 @@
     display: block;
     width: 100%;
     max-width: 230px;
-    aspect-ratio: 148 / 210;
-    border-radius: 4px 10px 10px 4px;
+    border-radius: 3px;
     overflow: hidden;
     position: relative;
     text-decoration: none;
@@ -526,65 +525,9 @@
 
   .book-cover img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     display: block;
-  }
-
-  /* 表紙画像がない場合のデザイン表紙 */
-  .cover-art {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 22px 18px 18px 26px;
-    color: #fff;
-    background: var(--c1);
-  }
-
-  .cover-art::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 8px;
-    background: rgba(0,0,0,0.18);
-  }
-
-  .cover-art .ca-series {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    opacity: 0.85;
-  }
-
-  .cover-art .ca-title {
-    font-size: 26px;
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-  }
-
-  .cover-art .ca-title small {
-    display: block;
-    font-size: 13px;
-    font-weight: 500;
-    margin-top: 8px;
-    opacity: 0.9;
-  }
-
-  .cover-art .ca-glyph {
-    font-size: 64px;
-    font-weight: 700;
-    line-height: 1;
-    opacity: 0.22;
-    align-self: flex-end;
-  }
-
-  .cover-art .ca-author {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    opacity: 0.9;
+    background: #fff;
   }
 
   .cover-amazon {
@@ -621,6 +564,12 @@
     line-height: 1.35;
   }
 
+  .book-sub {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+
   .book-desc {
     margin-top: 8px;
     font-size: 14px;
@@ -651,6 +600,8 @@
   .pill-link.primary:hover { background: #3a3a3c; }
   .pill-link.ghost { background: rgba(123,191,234,0.15); color: var(--sky-deep); }
   .pill-link.ghost:hover { background: rgba(123,191,234,0.28); }
+
+  .books-all { margin-top: 48px; }
 
   /* ── Apps ── */
   .app-grid {
@@ -785,15 +736,8 @@
     .example-grid { grid-template-columns: 1fr; }
     .book-grid { grid-template-columns: 1fr; gap: 36px; }
     .book-card { display: grid; grid-template-columns: 116px 1fr; column-gap: 18px; align-items: start; }
-    .book-card > .book-cover { grid-row: 1 / span 5; }
+    .book-card > .book-cover { grid-row: 1 / span 6; }
     .book-lang { margin-top: 0; }
-    .cover-art { padding: 12px 8px 10px 14px; }
-    .cover-art::before { width: 5px; }
-    .cover-art .ca-series { font-size: 8px; }
-    .cover-art .ca-title { font-size: 14px; }
-    .cover-art .ca-title small { font-size: 9px; margin-top: 4px; }
-    .cover-art .ca-glyph { font-size: 32px; }
-    .cover-art .ca-author { font-size: 9px; }
     .cover-amazon { display: none; }
     .book-title { font-size: 17px; }
     .app-grid { grid-template-columns: 1fr; }
@@ -890,77 +834,101 @@
 </section>
 
 <!-- Books -->
-<!--
-  著書の追加・更新方法：
-  ・Amazon の商品ページURLを .book-cover と「Amazonで見る」の href に入れてください。
-  ・表紙画像があれば、.cover-art の <div> を <img src="images/xxx.jpg" alt="書名 表紙"> に置き換えてください。
--->
 <section class="section alt" id="books">
   <div class="section-inner">
     <p class="section-label fade-in">著書</p>
     <h2 class="section-title fade-in">AIとつくった教科書。</h2>
-    <p class="section-lead fade-in">授業での実践をもとに、AIを活用して企画・執筆・音声制作まで行った教科書です。各書には音声と練習アプリがついていて、スマートフォンからすぐに学習できます。表紙をクリックするとAmazonのページが開きます。</p>
+    <p class="section-lead fade-in">授業での実践をもとに、AIを活用して企画・執筆・音声制作まで行った教科書です。多くの本に音声と練習アプリがついていて、スマートフォンからすぐに学習できます。表紙をクリックするとAmazonのページが開きます。</p>
 
     <div class="book-grid fade-in">
 
       <div class="book-card">
-        <a class="book-cover" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E9%9F%93%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8" target="_blank" rel="noopener" aria-label="『3ヶ月でレベルアップ 韓国語 料理編』をAmazonで見る">
-          <div class="cover-art" style="--c1: linear-gradient(160deg, #B0527C, #8C3A5E);">
-            <span class="ca-series">3개월 레벨업 한국어</span>
-            <span class="ca-title">3ヶ月で<br>レベルアップ<br>韓国語<small>料理編 요리편</small></span>
-            <span class="ca-glyph">밥</span>
-            <span class="ca-author">白 海燕</span>
-          </div>
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+55%E5%AD%97%E3%81%A7%E8%AA%AD%E3%81%BF%E8%A7%A3%E3%81%8F+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『漢字から広がる韓国語の世界 入門編』をAmazonで見る">
+          <img src="images/books/kankoku-nyumon.jpg" alt="『漢字から広がる韓国語の世界 入門編』表紙" loading="lazy">
+          <span class="cover-amazon">Amazon ›</span>
+        </a>
+        <p class="book-lang">韓国語 × 漢字</p>
+        <h3 class="book-title">漢字から広がる韓国語の世界 入門編</h3>
+        <p class="book-sub">55字で読み解く、芋づる式漢字語学習</p>
+        <p class="book-desc">「人（인）」など基本の55字から、韓国語の漢字語を芋づる式に覚える入門編。TOPIK1〜4級の語彙に対応。練習アプリつき。</p>
+        <div class="book-links">
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+55%E5%AD%97%E3%81%A7%E8%AA%AD%E3%81%BF%E8%A7%A3%E3%81%8F+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
+          <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/kanji55-practice/" target="_blank" rel="noopener">練習アプリ</a>
+        </div>
+      </div>
+      <div class="book-card">
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+%E4%B8%AD%E7%B4%9A%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『漢字から広がる韓国語の世界 中級編』をAmazonで見る">
+          <img src="images/books/kankoku-chukyu.jpg" alt="『漢字から広がる韓国語の世界 中級編』表紙" loading="lazy">
+          <span class="cover-amazon">Amazon ›</span>
+        </a>
+        <p class="book-lang">韓国語 × 漢字</p>
+        <h3 class="book-title">漢字から広がる韓国語の世界 中級編</h3>
+        <p class="book-sub">199字で読み解く漢字語</p>
+        <p class="book-desc">199字の漢字音を手がかりに、中級レベルの漢字語を体系的に広げていく一冊。TOPIK1〜4級語彙、練習アプリつき。</p>
+        <div class="book-links">
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+%E4%B8%AD%E7%B4%9A%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
+          <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/kanji55-practice/chukyu/" target="_blank" rel="noopener">練習アプリ</a>
+        </div>
+      </div>
+      <div class="book-card">
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+%E6%8E%A5%E8%BE%9E%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『漢字から広がる韓国語の世界 接辞編』をAmazonで見る">
+          <img src="images/books/kankoku-setsuji.jpg" alt="『漢字から広がる韓国語の世界 接辞編』表紙" loading="lazy">
+          <span class="cover-amazon">Amazon ›</span>
+        </a>
+        <p class="book-lang">韓国語 × 漢字</p>
+        <h3 class="book-title">漢字から広がる韓国語の世界 接辞編</h3>
+        <p class="book-sub">接辞24字で広がる漢字語</p>
+        <p class="book-desc">「的」「性」などの接辞24字で、漢字語を一気に何倍にも増やす接辞編。TOPIK1〜4級語彙、練習アプリつき。</p>
+        <div class="book-links">
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%81%8B%E3%82%89%E5%BA%83%E3%81%8C%E3%82%8B%E9%9F%93%E5%9B%BD%E8%AA%9E%E3%81%AE%E4%B8%96%E7%95%8C+%E6%8E%A5%E8%BE%9E%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
+          <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/kanji55-practice/setsuji/" target="_blank" rel="noopener">練習アプリ</a>
+        </div>
+      </div>
+      <div class="book-card">
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E9%9F%93%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『3ヶ月でレベルアップ 韓国語 料理編』をAmazonで見る">
+          <img src="images/books/kankokugo-ryori.jpg" alt="『3ヶ月でレベルアップ 韓国語 料理編』表紙" loading="lazy">
           <span class="cover-amazon">Amazon ›</span>
         </a>
         <p class="book-lang">韓国語</p>
         <h3 class="book-title">3ヶ月でレベルアップ 韓国語 料理編</h3>
-        <p class="book-desc">キムチチャーハン、ビビンバ、トックク……季節の韓国料理12品をテーマに、会話と文法を学ぶ全12課。音声60トラック（約60分）と復習アプリつき。</p>
+        <p class="book-sub">音声60トラック・復習アプリつき</p>
+        <p class="book-desc">キムチチャーハン、ビビンバ、トックク……季節の韓国料理12品で会話と文法を学ぶ全12課。初中級レベル。</p>
         <div class="book-links">
-          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E9%9F%93%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8" target="_blank" rel="noopener">Amazonで見る</a>
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E9%9F%93%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
           <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/3c2k3hwuhu/" target="_blank" rel="noopener">音声・アプリ</a>
         </div>
       </div>
-
       <div class="book-card">
-        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E4%B8%AD%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『中国語 料理編』をAmazonで見る">
-          <div class="cover-art" style="--c1: linear-gradient(160deg, #C8413A, #8E1E18);">
-            <span class="ca-series">中国語で味わう中国料理</span>
-            <span class="ca-title">中国語<small>料理編 中国菜篇</small></span>
-            <span class="ca-glyph">饺</span>
-            <span class="ca-author">白 海燕</span>
-          </div>
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E4%B8%AD%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『3ヶ月でレベルアップ 中国語 料理編』をAmazonで見る">
+          <img src="images/books/chugokugo-ryori.jpg" alt="『3ヶ月でレベルアップ 中国語 料理編』表紙" loading="lazy">
           <span class="cover-amazon">Amazon ›</span>
         </a>
         <p class="book-lang">中国語</p>
-        <h3 class="book-title">中国語 料理編</h3>
-        <p class="book-desc">餃子、麻婆豆腐、北京ダック、火鍋など中国各地の料理12品で学ぶ全12課。本文音声93本、単語カード282語・4択クイズ・書き取りの練習アプリつき。</p>
+        <h3 class="book-title">3ヶ月でレベルアップ 中国語 料理編</h3>
+        <p class="book-sub">HSK3〜4級レベル</p>
+        <p class="book-desc">餃子、麻婆豆腐、北京ダック、火鍋など中国各地の料理12品で学ぶ全12課。本文音声93本、単語カード282語の練習アプリつき。</p>
         <div class="book-links">
-          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E4%B8%AD%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=3%E3%83%B6%E6%9C%88%E3%81%A7%E3%83%AC%E3%83%99%E3%83%AB%E3%82%A2%E3%83%83%E3%83%97+%E4%B8%AD%E5%9B%BD%E8%AA%9E+%E6%96%99%E7%90%86%E7%B7%A8+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
           <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/chinese-cuisine/" target="_blank" rel="noopener">音声・アプリ</a>
         </div>
       </div>
-
       <div class="book-card">
-        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%9755%E5%AD%97+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『漢字55字』をAmazonで見る">
-          <div class="cover-art" style="--c1: linear-gradient(160deg, #4FA83A, #2E7A2A);">
-            <span class="ca-series">漢字で学ぶ韓国語</span>
-            <span class="ca-title">漢字55字<small>全55章 한자 55자</small></span>
-            <span class="ca-glyph">人</span>
-            <span class="ca-author">白 海燕</span>
-          </div>
+        <a class="book-cover" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%80%81%E4%B8%89%E5%BA%A6%E8%BF%B7%E3%81%86+%E7%82%B9%E3%81%A8%2C%E7%B7%9A+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener" aria-label="『漢字、三度迷う』をAmazonで見る">
+          <img src="images/books/kanji-sando.jpg" alt="『漢字、三度迷う』表紙" loading="lazy">
           <span class="cover-amazon">Amazon ›</span>
         </a>
-        <p class="book-lang">韓国語 × 漢字</p>
-        <h3 class="book-title">漢字55字教材</h3>
-        <p class="book-desc">「人（인）」をはじめとする55字の漢字音から、韓国語の漢字語を芋づる式に覚える全55章。漢字ドリル・マッチング・文章穴埋めの練習アプリつき。</p>
+        <p class="book-lang">日中韓 対照</p>
+        <h3 class="book-title">漢字、三度迷う</h3>
+        <p class="book-sub">点と、線 ― 日中韓 同形漢字語の物語</p>
+        <p class="book-desc">同じ漢字語が、中国語・日本語・韓国語でどう意味を変えるのか。「老婆」をはじめ、三つの言語を行き来する漢字語の物語。</p>
         <div class="book-links">
-          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%9755%E5%AD%97+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
-          <a class="pill-link ghost" href="https://haeyeon0001-prog.github.io/kanji55-practice/" target="_blank" rel="noopener">練習アプリ</a>
+          <a class="pill-link primary" href="https://www.amazon.co.jp/s?k=%E6%BC%A2%E5%AD%97%E3%80%81%E4%B8%89%E5%BA%A6%E8%BF%B7%E3%81%86+%E7%82%B9%E3%81%A8%2C%E7%B7%9A+%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで見る</a>
         </div>
       </div>
 
     </div>
+
+    <p class="books-all fade-in"><a class="profile-cta" href="https://www.amazon.co.jp/s?k=%E7%99%BD%E6%B5%B7%E7%87%95" target="_blank" rel="noopener">Amazonで著書をすべて見る <span class="arrow">→</span></a></p>
   </div>
 </section>
 
@@ -1009,8 +977,8 @@
       </a>
       <a class="app-card" href="https://haeyeon0001-prog.github.io/kanji55-practice/" target="_blank" rel="noopener">
         <div class="app-icon" style="background: linear-gradient(135deg, #4FA83A, #2E7A2A);">漢</div>
-        <h3>漢字55字 練習アプリ</h3>
-        <p>全55章。漢字ドリル・漢字探し・漢字⇔ハングルのマッチング・文章穴埋めの4モードで、韓国語の漢字語を身につけます。</p>
+        <h3>漢字から広がる韓国語の世界 練習アプリ</h3>
+        <p>入門編・中級編・接辞編に対応。漢字ドリル・漢字探し・漢字⇔ハングルのマッチング・文章穴埋めの4モードで、韓国語の漢字語を身につけます。</p>
         <div class="app-meta"><span class="blog-tag sakura">韓国語</span><span class="app-open">開く ›</span></div>
       </a>
     </div>
