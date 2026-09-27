@@ -19,10 +19,9 @@ export async function firebase() {
   return ctx;
 }
 
-// 認証状態が確定するまで待つ（リダイレクトでログインした直後の結果も反映する）
+// 認証状態が確定するまで待つ
 export async function currentUser() {
-  const { auth, authMod } = await firebase();
-  try { await authMod.getRedirectResult(auth); } catch (e) { console.warn("[login]", e); }
+  const { auth } = await firebase();
   await auth.authStateReady();
   return auth.currentUser;
 }
@@ -63,20 +62,32 @@ export async function saveProfile(user, { name, affiliation }) {
   try { localStorage.setItem(cacheKey(user.uid), "1"); } catch {}
 }
 
-export async function signInWithGoogle() {
+const EMAIL_KEY = "bhy-login-email";
+
+// ログイン用リンクをメールで送る。リンクを押すとこのログイン画面（next 付き）に戻る
+export async function sendLoginLink(email) {
   const { auth, authMod } = await firebase();
-  const provider = new authMod.GoogleAuthProvider();
-  provider.setCustomParameters({ prompt: "select_account" });
-  try {
-    return (await authMod.signInWithPopup(auth, provider)).user;
-  } catch (e) {
-    // ポップアップがブロックされた端末ではリダイレクトで再試行
-    if (e && (e.code === "auth/popup-blocked" || e.code === "auth/operation-not-supported-in-this-environment")) {
-      await authMod.signInWithRedirect(auth, provider);
-      return null;
-    }
-    throw e;
-  }
+  await authMod.sendSignInLinkToEmail(auth, email, { url: location.href, handleCodeInApp: true });
+  try { localStorage.setItem(EMAIL_KEY, email); } catch {}
+}
+
+// 今のURLがメールのログイン用リンクか
+export async function isLoginLink() {
+  const { auth, authMod } = await firebase();
+  return authMod.isSignInWithEmailLink(auth, location.href);
+}
+
+// 送信時に保存したメールアドレス（別の端末で開いた場合は null）
+export function savedEmail() {
+  try { return localStorage.getItem(EMAIL_KEY); } catch { return null; }
+}
+
+// メールのリンクでログインを完了する
+export async function completeLoginLink(email) {
+  const { auth, authMod } = await firebase();
+  const cred = await authMod.signInWithEmailLink(auth, email, location.href);
+  try { localStorage.removeItem(EMAIL_KEY); } catch {}
+  return cred.user;
 }
 
 export async function signOut() {

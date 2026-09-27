@@ -23,13 +23,6 @@
   h1 { font-size: 24px; letter-spacing: -.02em; line-height: 1.35; margin: 6px 0 10px; }
   .lead { font-size: 14px; color: var(--sub); }
   .step[hidden] { display: none; }
-  .google {
-    margin-top: 24px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px;
-    font: inherit; font-size: 15px; font-weight: 600; color: var(--ink); background: #fff;
-    border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; cursor: pointer;
-  }
-  .google:hover { background: #fafafa; }
-  .google svg { width: 20px; height: 20px; }
   form { margin-top: 20px; display: grid; gap: 16px; }
   label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--sub); }
   label .req { color: var(--sakura-deep); font-weight: 600; margin-left: 4px; }
@@ -71,12 +64,33 @@
 
   <section class="step" id="step-signin" hidden>
     <h1>ログインしてください</h1>
-    <p class="lead">教科書と連動した音声・練習アプリは、登録した方のみご利用いただけます。Googleアカウントでログインし、初回のみお名前とご所属を登録してください。</p>
-    <button class="google" id="google" type="button">
-      <svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
-      Googleでログイン
-    </button>
+    <p class="lead">教科書と連動した音声・練習アプリは、登録した方のみご利用いただけます。メールアドレスを入力すると、ログイン用のリンクが届きます。初回のみ、お名前とご所属を登録してください。</p>
+    <form id="email-form" novalidate>
+      <label><span>メールアドレス<span class="req">必須</span></span>
+        <input id="f-login-email" type="email" autocomplete="email" inputmode="email" required placeholder="例：hanako@example.com">
+      </label>
+      <button class="primary" id="send" type="submit">ログイン用リンクを送る</button>
+    </form>
     <p class="err" id="signin-err"></p>
+  </section>
+
+  <section class="step" id="step-sent" hidden>
+    <h1>メールを送りました</h1>
+    <p class="lead"><strong id="sent-to"></strong> にログイン用のリンクを送りました。メールを開いて、リンクを押してください。</p>
+    <p class="note" style="margin-top:14px">数分たっても届かない場合は、迷惑メールフォルダもご確認ください。リンクは、このページを開いたのと同じ端末・ブラウザで開くとスムーズです。</p>
+    <div class="links"><button type="button" id="resend">メールアドレスを入力し直す</button></div>
+  </section>
+
+  <section class="step" id="step-confirm" hidden>
+    <h1>メールアドレスの確認</h1>
+    <p class="lead">別の端末やブラウザでリンクが開かれました。確認のため、リンクを送ったメールアドレスをもう一度入力してください。</p>
+    <form id="confirm-form" novalidate>
+      <label><span>メールアドレス<span class="req">必須</span></span>
+        <input id="f-confirm-email" type="email" autocomplete="email" inputmode="email" required>
+      </label>
+      <button class="primary" type="submit">ログイン</button>
+    </form>
+    <p class="err" id="confirm-err"></p>
   </section>
 
   <section class="step" id="step-profile" hidden>
@@ -96,7 +110,7 @@
       <button class="primary" id="save" type="submit">登録してアプリへ進む</button>
     </form>
     <p class="err" id="profile-err"></p>
-    <div class="links"><button type="button" class="signout">別のアカウントでログイン</button></div>
+    <div class="links"><button type="button" class="signout">別のメールアドレスでログイン</button></div>
   </section>
 
   <section class="step" id="step-account" hidden>
@@ -114,7 +128,10 @@
 </main>
 
 <script type="module">
-import { enabled, currentUser, getProfile, saveProfile, signInWithGoogle, signOut } from "./auth.js";
+import {
+  enabled, currentUser, getProfile, saveProfile, signOut,
+  sendLoginLink, isLoginLink, savedEmail, completeLoginLink,
+} from "./auth.js";
 
 const $ = (id) => document.getElementById(id);
 const show = (id) => document.querySelectorAll(".step").forEach((s) => (s.hidden = s.id !== id));
@@ -132,13 +149,31 @@ document.querySelectorAll(".next-link").forEach((a) => (a.href = next));
 const goNext = () => location.replace(next);
 
 const MESSAGES = {
-  "auth/popup-closed-by-user": "ログインがキャンセルされました。もう一度お試しください。",
-  "auth/cancelled-popup-request": "ログインがキャンセルされました。もう一度お試しください。",
+  "auth/invalid-email": "メールアドレスの形式が正しくありません。",
+  "auth/missing-email": "メールアドレスを入力してください。",
+  "auth/invalid-action-code": "このリンクは使用済みか、有効期限が切れています。もう一度リンクを送ってください。",
+  "auth/expired-action-code": "リンクの有効期限が切れています。もう一度リンクを送ってください。",
+  "auth/quota-exceeded": "本日のメール送信数の上限に達しました。時間をおいてお試しください（管理者向け：Firebaseのプランを確認してください）。",
+  "auth/operation-not-allowed": "メールでのログインが有効になっていません（管理者向け：Authenticationの「メールリンク」を有効にしてください）。",
+  "auth/unauthorized-continue-uri": "このページのドメインがFirebaseに登録されていません（管理者向け：承認済みドメインを確認してください）。",
   "auth/network-request-failed": "通信エラーが発生しました。通信状況を確認してください。",
-  "auth/unauthorized-domain": "このページのドメインがFirebaseに登録されていません（管理者向け：承認済みドメインを確認してください）。",
   "permission-denied": "登録できませんでした（管理者向け：Firestoreのルールを確認してください）。",
 };
 const message = (e) => MESSAGES[e && e.code] || "エラーが発生しました。時間をおいてもう一度お試しください。";
+const validEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+// ログイン用リンクの確認用パラメータを取り除いた、このページのURL
+function cleanUrl() {
+  const u = new URL(location.href);
+  ["apiKey", "oobCode", "mode", "lang", "continueUrl", "tenantId"].forEach((k) => u.searchParams.delete(k));
+  history.replaceState(null, "", u.href);
+}
+
+async function finishLink(email) {
+  await completeLoginLink(email);
+  cleanUrl();
+  await route();
+}
 
 async function route() {
   const user = await currentUser();
@@ -146,7 +181,7 @@ async function route() {
   const profile = await getProfile(user);
   if (!profile || !profile.name || !profile.affiliation) {
     $("f-email").value = user.email || "";
-    $("f-name").value = (profile && profile.name) || user.displayName || "";
+    $("f-name").value = (profile && profile.name) || "";
     $("f-aff").value = (profile && profile.affiliation) || "";
     show("step-profile");
     return;
@@ -160,17 +195,53 @@ async function route() {
   goNext();
 }
 
-$("google").addEventListener("click", async () => {
+async function start() {
+  if (await isLoginLink()) {
+    const email = savedEmail();
+    if (email) return finishLink(email);
+    return show("step-confirm");
+  }
+  return route();
+}
+
+$("email-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const email = $("f-login-email").value.trim();
+  if (!validEmail(email)) {
+    $("signin-err").textContent = "メールアドレスを正しく入力してください。";
+    return $("f-login-email").focus();
+  }
   $("signin-err").textContent = "";
-  $("google").disabled = true;
+  $("send").disabled = true;
   try {
-    const user = await signInWithGoogle();
-    if (user) await route();
+    await sendLoginLink(email);
+    $("sent-to").textContent = email;
+    show("step-sent");
   } catch (e) {
     console.error(e);
     $("signin-err").textContent = message(e);
   } finally {
-    $("google").disabled = false;
+    $("send").disabled = false;
+  }
+});
+
+$("resend").addEventListener("click", () => show("step-signin"));
+
+$("confirm-form").addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const email = $("f-confirm-email").value.trim();
+  if (!validEmail(email)) {
+    $("confirm-err").textContent = "メールアドレスを正しく入力してください。";
+    return;
+  }
+  $("confirm-err").textContent = "";
+  try {
+    await finishLink(email);
+  } catch (e) {
+    console.error(e);
+    $("confirm-err").textContent = e && e.code === "auth/invalid-email"
+      ? "リンクを送ったメールアドレスと一致しません。"
+      : message(e);
   }
 });
 
@@ -205,7 +276,7 @@ document.querySelectorAll(".signout").forEach((b) =>
 if (!enabled) {
   show("step-off");
 } else {
-  route().catch((e) => {
+  start().catch((e) => {
     console.error(e);
     show("step-signin");
     $("signin-err").textContent = message(e);

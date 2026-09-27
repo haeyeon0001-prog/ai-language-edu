@@ -36,7 +36,7 @@ GitHub Pages を有効にすれば、そのまま公開サイトとして使え�
 
 各アプリの全ページの `<head>` で `account/gate.js` を読み込んでいます。未ログイン、または氏名・所属が未登録の人は `account/login.html` に移動します。
 
-- ログイン方法：Googleアカウント（Firebase Authentication）
+- ログイン方法：メールに届くリンク（Firebase Authentication のメールリンク。Blaze プランが必要）
 - 登録情報：Firestore の `users/{uid}` に保存（email・name・affiliation）
 - `firebase-config.js` が `null` のあいだは、ログイン確認をせず誰でも開けます
 - Firestore のルールは `account/firestore.rules` の内容を Firebase コンソールに貼り付けます
